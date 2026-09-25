@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECRET ZONE</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            font-family: "Comic Sans MS", "Chalkboard SE", sans-serif;
+            overflow: hidden;
+        }
+
+        #det-button {
+            width: 100%;
+            height: 100%;
+            background-color: #c0c0c0;
+            border: 10px outset #ffffff;
+            font-size: 80px;
+            font-weight: bold;
+            color: #000000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        #det-button:active {
+            border-style: inset;
+        }
+
+        #magic-zone {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #8a2be2;
+            font-size: 45px;
+            margin-top: 40px;
+            text-shadow: 2px 2px #ff00ff;
+            padding: 0 10px;
+        }
+
+        .img-container {
+            position: absolute;
+            width: 100%;
+            height: 60%;
+            bottom: 0;
+        }
+
+        .smart-pic {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            animation: jumpAndSpin 2s infinite ease-in-out alternate;
+        }
+
+        @keyframes jumpAndSpin {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translateY(-200px) rotate(360deg) scale(1.4);
+            }
+            100% {
+                transform: translateY(50px) rotate(720deg) scale(0.8);
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            animation: fly 3s forwards linear;
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="det-button" onclick="startMagic()">КНОПКА</button>
+
+    <div id="magic-zone">
+        <h1>привет друзя с HSK 2 с mister smart!</h1>
+        <div class="img-container" id="container-images"></div>
+    </div>
+
+<script>
+    function startMagic() {
+        document.getElementById('det-button').style.display = 'none';
+        document.getElementById('magic-zone').style.display = 'block';
+
+        const container = document.getElementById('container-images');
+        const imgSrc = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG4mlkW_60NiHKQlXG1vtVGdfQuHE27O_yUVl8kIxn9Q&s=10";
+
+        for (let i = 0; i < 8; i++) {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.className = 'smart-pic';
+            img.style.left = Math.random() * 80 + 5 + '%';
+            img.style.top = Math.random() * 40 + 20 + '%';
+            img.style.animationDelay = (Math.random() * 1.5) + 's';
+            container.appendChild(img);
+        }
+
+        spawnConfetti('left');
+        spawnConfetti('right');
+    }
+
+    function spawnConfetti(side) {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900'];
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            confetti.style.top = Math.random() * 80 + 10 + '%';
+            if (side === 'left') {
+                confetti.style.left = '0px';
+            } else {
+                confetti.style.right = '0px';
+            }
+
+            const xDist = side === 'left' ? (Math.random() * 400 + 200) : -(Math.random() * 400 + 200);
+            const yDist = (Math.random() * 400) - 200;
+
+            confetti.style.setProperty('--x', `${xDist}px`);
+            confetti.style.setProperty('--y', `${yDist}px`);
+            
+            document.body.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+</script>
+
+</body>
+</html>
