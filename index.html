@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mistir smartik</title>
+    <title>mistre smart </title>
     <style>
         body, html {
             margin: 0;
@@ -46,6 +46,7 @@
             height: 100%;
             text-align: center;
         }
+
         h1 {
             color: #8a2be2;
             font-size: 45px;
@@ -56,13 +57,14 @@
 
         .smart-wrapper {
             position: absolute;
-            bottom: 15%; 
+            bottom: 15%;
             width: 140px;
             height: 140px;
-            transition: left 1s ease-in-out; 
+            transition: left var(--move-time) linear; 
             
-            animation: heavyJump 0.5s infinite alternate cubic-bezier(0.6, 0.05, 0.4, 1);
+            animation: heavyJump 0.45s infinite alternate cubic-bezier(0.6, 0.05, 0.4, 1);
         }
+
         .smart-pic {
             width: 100%;
             height: 100%;
@@ -72,7 +74,7 @@
             background-color: white;
             
             transform-style: preserve-3d;
-            animation: spinY var(--spin-time) infinite linear;
+            animation: spinRight var(--spin-time) infinite linear;
         }
 
         @keyframes heavyJump {
@@ -80,16 +82,16 @@
                 transform: translateY(0);
             }
             100% {
-                transform: translateY(-220px); 
+                transform: translateY(-240px); 
             }
         }
 
-        @keyframes spinY {
+        @keyframes spinRight {
             0% {
                 transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
             }
             100% {
-                transform: rotateX(0deg) rotateY(var(--rotY)) rotateZ(0deg);
+                transform: rotateX(0deg) rotateY(360deg) rotateZ(0deg);
             }
         }
 
@@ -133,33 +135,36 @@
         for (let i = 0; i < count; i++) {
             const wrapper = document.createElement('div');
             wrapper.className = 'smart-wrapper';
-            wrapper.style.left = Math.random() * 80 + '%';
+            wrapper.style.left = Math.random() * 80 + '%'; 
             
-            wrapper.style.animationDelay = `-${Math.random() * 0.5}s`;
+            wrapper.style.animationDelay = `-${Math.random() * 0.45}s`;
 
             const img = document.createElement('img');
             img.src = imgSrc;
             img.className = 'smart-pic';
 
-            const rotY = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 2) + 1) + 'deg';
-            const spinTime = (Math.random() * 1.5 + 1) + 's'; 
-
-            img.style.setProperty('--rotY', rotY);
+            const spinTime = (Math.random() * 0.4 + 0.8) + 's';
             img.style.setProperty('--spin-time', spinTime);
+
             wrapper.appendChild(img);
             magicZone.appendChild(wrapper);
-
-            moveHorizontally(wrapper);
-            setInterval(() => moveHorizontally(wrapper), 1200);
+            keepMoving(wrapper);
         }
 
         spawnConfetti('left');
         spawnConfetti('right');
     }
 
-    function moveHorizontally(element) {
+    function keepMoving(element) {
         const randomX = Math.random() * 80 + '%';
+        const moveTime = (Math.random() * 0.05 + 1); 
+
+        element.style.setProperty('--move-time', moveTime + 's');
         element.style.left = randomX;
+
+        setTimeout(() => {
+            keepMoving(element);
+        }, moveTime * 1000);
     }
 
     function spawnConfetti(side) {
@@ -190,3 +195,4 @@
 
 </body>
 </html>
+ 
