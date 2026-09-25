@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>мистер смарт ZONA</title>
+    <title>SECRET мистер смартiк</title>
     <style>
         body, html {
             margin: 0;
@@ -61,19 +61,29 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
             background-color: white;
-            transition: left 2s linear, top 2s ease-in-out;
+            
+            transition: left 0.8s ease-in-out;
             transform-style: preserve-3d;
-            animation: spin3D var(--spin-time) infinite linear;
-            animation-delay: var(--delay-time);
+            
+            animation: spinY var(--spin-time) infinite linear, 
+                       heavyJump 0.6s infinite alternate cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* Безумное 3D вращение */
-        @keyframes spin3D {
+        @keyframes spinY {
             0% {
-                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+                transform: translateY(var(--jump-y)) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
             }
             100% {
-                transform: rotateX(var(--rotX)) rotateY(var(--rotY)) rotateZ(var(--rotZ));
+                transform: translateY(var(--jump-y)) rotateX(0deg) rotateY(var(--rotY)) rotateZ(0deg);
+            }
+        }
+
+        @keyframes heavyJump {
+            0% {
+                --jump-y: 0px;
+            }
+            100% {
+                --jump-y: -180px; 
             }
         }
 
@@ -118,39 +128,32 @@
 
         for (let i = 0; i < count; i++) {
             const img = document.createElement('img');
-            img.src = imgSrc; 
+            img.src = imgSrc;
             img.className = 'smart-pic';
+            img.style.left = Math.random() * 80 + '%';
+            img.style.bottom = Math.random() * 20 + 10 + '%'; 
 
-            img.style.left = Math.random() * 70 + 5 + '%';
-            img.style.top = Math.random() * 50 + 30 + '%';
+            const rotY = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 2) + 1) + 'deg';
+            const spinTime = (Math.random() * 2 + 1.5) + 's'; 
+            
+            img.style.animationDelay = `-${Math.random() * 0.6}s`;
 
-            const rotX = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 3) + 1) + 'deg';
-            const rotY = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 3) + 1) + 'deg';
-            const rotZ = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 2) + 1) + 'deg';
-            const spinTime = (Math.random() * 3 + 2) + 's'; 
-            const delayTime = (Math.random() * 2) + 's';
-
-            img.style.setProperty('--rotX', rotX);
             img.style.setProperty('--rotY', rotY);
-            img.style.setProperty('--rotZ', rotZ);
             img.style.setProperty('--spin-time', spinTime);
-            img.style.setProperty('--delay-time', delayTime);
 
             magicZone.appendChild(img);
 
-            moveAndJump(img);
-            setInterval(() => moveAndJump(img), 2000);
+            moveHorizontally(img);
+            setInterval(() => moveHorizontally(img), 1200);
         }
 
         spawnConfetti('left');
         spawnConfetti('right');
     }
 
-    function moveAndJump(element) {
+    function moveHorizontally(element) {
         const randomX = Math.random() * 80 + '%';
-        const randomY = Math.random() * 55 + 30 + '%'; 
         element.style.left = randomX;
-        element.style.top = randomY;
     }
 
     function spawnConfetti(side) {
