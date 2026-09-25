@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECRET мистер смартiк</title>
+    <title>mistir smartik</title>
     <style>
         body, html {
             margin: 0;
@@ -29,6 +29,8 @@
             align-items: center;
             justify-content: center;
             text-transform: uppercase;
+            position: relative;
+            z-index: 10;
         }
 
         #det-button:active {
@@ -44,7 +46,6 @@
             height: 100%;
             text-align: center;
         }
-
         h1 {
             color: #8a2be2;
             font-size: 45px;
@@ -53,41 +54,45 @@
             padding: 0 10px;
         }
 
-        .smart-pic {
+        .smart-wrapper {
             position: absolute;
+            bottom: 15%; 
             width: 140px;
             height: 140px;
+            transition: left 1s ease-in-out; 
+            
+            animation: heavyJump 0.5s infinite alternate cubic-bezier(0.6, 0.05, 0.4, 1);
+        }
+        .smart-pic {
+            width: 100%;
+            height: 100%;
             border: 3px solid #8a2be2; 
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
             background-color: white;
             
-            transition: left 0.8s ease-in-out;
             transform-style: preserve-3d;
-            
-            animation: spinY var(--spin-time) infinite linear, 
-                       heavyJump 0.6s infinite alternate cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        @keyframes spinY {
-            0% {
-                transform: translateY(var(--jump-y)) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-            }
-            100% {
-                transform: translateY(var(--jump-y)) rotateX(0deg) rotateY(var(--rotY)) rotateZ(0deg);
-            }
+            animation: spinY var(--spin-time) infinite linear;
         }
 
         @keyframes heavyJump {
             0% {
-                --jump-y: 0px;
+                transform: translateY(0);
             }
             100% {
-                --jump-y: -180px; 
+                transform: translateY(-220px); 
             }
         }
 
-        /* Конфетти */
+        @keyframes spinY {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+            100% {
+                transform: rotateX(0deg) rotateY(var(--rotY)) rotateZ(0deg);
+            }
+        }
+
         .confetti {
             position: absolute;
             width: 15px;
@@ -121,30 +126,31 @@
         document.getElementById('magic-zone').style.display = 'block';
 
         const magicZone = document.getElementById('magic-zone');
-        
         const imgSrc = encodeURIComponent("images (6).jpg");
 
         const count = 4; 
 
         for (let i = 0; i < count; i++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'smart-wrapper';
+            wrapper.style.left = Math.random() * 80 + '%';
+            
+            wrapper.style.animationDelay = `-${Math.random() * 0.5}s`;
+
             const img = document.createElement('img');
             img.src = imgSrc;
             img.className = 'smart-pic';
-            img.style.left = Math.random() * 80 + '%';
-            img.style.bottom = Math.random() * 20 + 10 + '%'; 
 
             const rotY = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 2) + 1) + 'deg';
-            const spinTime = (Math.random() * 2 + 1.5) + 's'; 
-            
-            img.style.animationDelay = `-${Math.random() * 0.6}s`;
+            const spinTime = (Math.random() * 1.5 + 1) + 's'; 
 
             img.style.setProperty('--rotY', rotY);
             img.style.setProperty('--spin-time', spinTime);
+            wrapper.appendChild(img);
+            magicZone.appendChild(wrapper);
 
-            magicZone.appendChild(img);
-
-            moveHorizontally(img);
-            setInterval(() => moveHorizontally(img), 1200);
+            moveHorizontally(wrapper);
+            setInterval(() => moveHorizontally(wrapper), 1200);
         }
 
         spawnConfetti('left');
