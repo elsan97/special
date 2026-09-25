@@ -13,6 +13,7 @@
             background-color: #ffffff;
             font-family: "Comic Sans MS", "Chalkboard SE", sans-serif;
             overflow: hidden;
+            perspective: 1000px; 
         }
 
         #det-button {
@@ -33,7 +34,6 @@
         #det-button:active {
             border-style: inset;
         }
-
         #magic-zone {
             display: none;
             position: absolute;
@@ -52,29 +52,28 @@
             padding: 0 10px;
         }
 
-        .img-container {
-            position: absolute;
-            width: 100%;
-            height: 60%;
-            bottom: 0;
-        }
-
         .smart-pic {
             position: absolute;
-            width: 150px;
-            height: 150px;
-            animation: jumpAndSpin 2s infinite ease-in-out alternate;
+            width: 140px;
+            height: 140px;
+            border: 3px solid #8a2be2; 
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+            background-color: white;
+            
+            transition: left 2s linear, top 2s ease-in-out;
+            
+            transform-style: preserve-3d;
+            animation: spin3D var(--spin-time) infinite linear;
+            animation-delay: var(--delay-time);
         }
 
-        @keyframes jumpAndSpin {
+        @keyframes spin3D {
             0% {
-                transform: translateY(0) rotate(0deg) scale(1);
-            }
-            50% {
-                transform: translateY(-200px) rotate(360deg) scale(1.4);
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
             }
             100% {
-                transform: translateY(50px) rotate(720deg) scale(0.8);
+                transform: rotateX(var(--rotX)) rotateY(var(--rotY)) rotateZ(var(--rotZ));
             }
         }
 
@@ -99,11 +98,10 @@
 </head>
 <body>
 
-    <button id="det-button" onclick="startMagic()">КНОПКА</button>
+    <button id="det-button" onclick="startMagic()">Кнопка</button>
 
     <div id="magic-zone">
-        <h1>привет друзя с HSK 2 с mister smart!</h1>
-        <div class="img-container" id="container-images"></div>
+        <h1>привет друзя с HSK 2 с Mister Smart!</h1>
     </div>
 
 <script>
@@ -111,46 +109,71 @@
         document.getElementById('det-button').style.display = 'none';
         document.getElementById('magic-zone').style.display = 'block';
 
-        const container = document.getElementById('container-images');
-        const imgSrc = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG4mlkW_60NiHKQlXG1vtVGdfQuHE27O_yUVl8kIxn9Q&s=10";
+        const magicZone = document.getElementById('magic-zone');
+        const imgSrc = "https://gstatic.com";
 
-        for (let i = 0; i < 8; i++) {
+        const count = 4; 
+
+        for (let i = 0; i < count; i++) {
             const img = document.createElement('img');
             img.src = imgSrc;
             img.className = 'smart-pic';
-            img.style.left = Math.random() * 80 + 5 + '%';
-            img.style.top = Math.random() * 40 + 20 + '%';
-            img.style.animationDelay = (Math.random() * 1.5) + 's';
-            container.appendChild(img);
+
+            img.style.left = Math.random() * 70 + 5 + '%';
+            img.style.top = Math.random() * 50 + 30 + '%';
+
+            const rotX = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 3) + 1) + 'deg';
+            const rotY = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 3) + 1) + 'deg';
+            const rotZ = (Math.random() > 0.5 ? 360 : -360) * (Math.floor(Math.random() * 2) + 1) + 'deg';
+            const spinTime = (Math.random() * 3 + 2) + 's'; 
+            const delayTime = (Math.random() * 2) + 's';
+
+            img.style.setProperty('--rotX', rotX);
+            img.style.setProperty('--rotY', rotY);
+            img.style.setProperty('--rotZ', rotZ);
+            img.style.setProperty('--spin-time', spinTime);
+            img.style.setProperty('--delay-time', delayTime);
+
+            magicZone.appendChild(img);
+
+            moveAndJump(img);
+            setInterval(() => moveAndJump(img), 2000);
         }
 
+        // Салют из конфетти
         spawnConfetti('left');
         spawnConfetti('right');
     }
 
+    function moveAndJump(element) {
+        const randomX = Math.random() * 80 + '%';
+        const randomY = Math.random() * 55 + 30 + '%'; 
+        
+        element.style.left = randomX;
+        element.style.top = randomY;
+    }
+
     function spawnConfetti(side) {
         const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900'];
-        
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 40; i++) {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            
             confetti.style.top = Math.random() * 80 + 10 + '%';
+            
             if (side === 'left') {
                 confetti.style.left = '0px';
             } else {
                 confetti.style.right = '0px';
             }
 
-            const xDist = side === 'left' ? (Math.random() * 400 + 200) : -(Math.random() * 400 + 200);
-            const yDist = (Math.random() * 400) - 200;
+            const xDist = side === 'left' ? (Math.random() * 500 + 200) : -(Math.random() * 500 + 200);
+            const yDist = (Math.random() * 500) - 250;
 
             confetti.style.setProperty('--x', `${xDist}px`);
             confetti.style.setProperty('--y', `${yDist}px`);
             
             document.body.appendChild(confetti);
-
             setTimeout(() => confetti.remove(), 3000);
         }
     }
